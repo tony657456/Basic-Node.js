@@ -36,7 +36,7 @@ var app = http.createServer(function(request,response){
   </html>
   `
       response.end(template);
-   
+      console.log(queryData.id);
     })
   
 });
