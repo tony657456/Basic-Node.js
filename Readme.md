@@ -21,7 +21,7 @@ var app = http.createServer(function (request, response) {
 
   response.end(template);
 });
-app.listen(3000);
+app.listen(3000);  
 ```
 
 ## 폴더에 있는 특정 파일을 읽는 코드 자동화
