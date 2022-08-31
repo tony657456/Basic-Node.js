@@ -23,3 +23,20 @@ var app = http.createServer(function (request, response) {
 });
 app.listen(3000);
 ```
+
+## 폴더에 있는 특정 파일을 읽는 코드 자동화
+
+```javascript
+    fs.readdir('./data', function(error, filelist){
+        var title = 'Welcome';
+        var description = 'Hello, Node.js';
+        var list = '<ul>';
+        var i = 0;
+        while(i < filelist.length){
+          list = list + 
+          `<li><a href="/?id=${filelist[i]}">${filelist[i]}</a></li>`;
+          i = i + 1;
+        }
+        list = list+'</ul>';
+    });
+```
