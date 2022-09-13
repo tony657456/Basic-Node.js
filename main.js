@@ -1,6 +1,7 @@
 var http = require('http');
 var fs = require('fs');
 var url = require('url');
+var qs = require('querystring');
 
 function templateHTML(title, list, body){
   return ` 
@@ -13,6 +14,7 @@ function templateHTML(title, list, body){
   <body>
     <h1><a href="/">WEB</a></h1>
     ${list}
+    <a href="/create">create</a>
     ${body}
   </body>
   </html>
@@ -63,7 +65,54 @@ var app = http.createServer(function(request,response){
         });
       });
       }
-    } else {
+
+    } else if(pathname === '/create'){
+      fs.readdir('./data', function(error, filelist){
+        var title = 'WEB - create';
+        var list = templateList(filelist);
+        var template = templateHTML(title, list, `
+        <form action = "http://localhost:3000/create_process" method="post">
+          <p><input type="text" name="title" placeholder="title"></p>
+          <p>
+            <textarea name="description" placeholder="descption"></textarea>
+          </p>
+          <p>
+            <input type="submit">
+          </p>
+        </form>
+        `);
+        response.writeHead(200);
+        response.end(template);
+      });
+
+    } else if(pathname === "/create_process"){
+      var body = "";
+
+      // function(data)라는 callback 함수를 이용해서 body라는 변수에 request data를
+      // 순차적으로 받아온다.(내부적인 건 모르겠음)
+      request.on('data', function(data){
+        body += data;
+
+        // 너무 많은 데이터가 들어왔을 때 자동으로 연결을 끊는 코드
+        /*
+        if (body.length > 1e6)
+        request.connection.destroy();
+        */
+      });
+
+      // 요청이 끝나게 되면 이 코드 부분이 실행이 된다.
+      request.on('end', function(){
+        var post = qs.parse(body);
+        var title = post.title;
+        var descption = post.description
+        console.log(title, descption);
+      });
+
+      response.writeHead(200);
+      response.end('success');
+    }
+    
+    else {
       response.writeHead(404);
       response.end('Not found');
     }
