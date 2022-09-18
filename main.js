@@ -104,15 +104,14 @@ var app = http.createServer(function(request,response){
       request.on('end', function(){
         var post = qs.parse(body);
         var title = post.title;
-        var descption = post.description
-        console.log(title, descption);
+        var description = post.description
+        console.log(title, description);
+        fs.writeFile(`data/${title}`, description, 'utf8', function(err){
+          response.writeHead(302, {Location: `/?id=${title}`});
+          response.end('success');
+        });
       });
-
-      response.writeHead(200);
-      response.end('success');
-    }
-    
-    else {
+    } else {
       response.writeHead(404);
       response.end('Not found');
     }
